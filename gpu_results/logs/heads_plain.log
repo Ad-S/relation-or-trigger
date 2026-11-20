@@ -1,0 +1,36 @@
+/home/gpu_bundle/.venv/lib/python3.10/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights: 100%|██████████| 390/390 [00:00<00:00, 4390.79it/s]
+[transformers] [1mDebertaV2Model LOAD REPORT[0m from: microsoft/deberta-v3-large
+Key                                     | Status     |  | 
+----------------------------------------+------------+--+-
+lm_predictions.lm_head.bias             | UNEXPECTED |  | 
+lm_predictions.lm_head.dense.bias       | UNEXPECTED |  | 
+lm_predictions.lm_head.LayerNorm.bias   | UNEXPECTED |  | 
+mask_predictions.dense.weight           | UNEXPECTED |  | 
+lm_predictions.lm_head.LayerNorm.weight | UNEXPECTED |  | 
+mask_predictions.classifier.weight      | UNEXPECTED |  | 
+lm_predictions.lm_head.dense.weight     | UNEXPECTED |  | 
+mask_predictions.LayerNorm.bias         | UNEXPECTED |  | 
+mask_predictions.classifier.bias        | UNEXPECTED |  | 
+mask_predictions.dense.bias             | UNEXPECTED |  | 
+mask_predictions.LayerNorm.weight       | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+motte_bailey: AtP on 55 pairs, 12s; top heads ['L21H15', 'L18H0', 'L19H6', 'L21H4', 'L23H5', 'L10H9', 'L20H11', 'L21H2', 'L23H3', 'L22H13']
+  motte_bailey ablation none: AUC 0.639
+  motte_bailey ablation top: AUC 0.620
+  motte_bailey ablation random: AUC 0.619
+  motte_bailey ablation top1_L21H15: AUC 0.642
+  motte_bailey ablation top1_L18H0: AUC 0.628
+  motte_bailey ablation top1_L19H6: AUC 0.647
+strawman: AtP on 77 pairs, 137s; top heads ['L20H3', 'L21H2', 'L23H8', 'L23H1', 'L18H0', 'L20H14', 'L21H15', 'L23H11', 'L14H8', 'L10H9']
+  strawman ablation none: AUC 0.627
+  strawman ablation top: AUC 0.603
+  strawman ablation random: AUC 0.625
+  strawman ablation top1_L20H3: AUC 0.615
+  strawman ablation top1_L21H2: AUC 0.621
+  strawman ablation top1_L23H8: AUC 0.631
+done in 253s

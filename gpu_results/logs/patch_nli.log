@@ -1,0 +1,34 @@
+/home/gpu_bundle/.venv/lib/python3.10/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights:  83%|████████▎ | 325/390 [00:00<00:00, 3241.98it/s]Loading weights: 100%|██████████| 390/390 [00:00<00:00, 3316.43it/s]
+[transformers] [1mDebertaV2Model LOAD REPORT[0m from: MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli
+Key                 | Status     |  | 
+--------------------+------------+--+-
+pooler.dense.weight | UNEXPECTED |  | 
+pooler.dense.bias   | UNEXPECTED |  | 
+classifier.weight   | UNEXPECTED |  | 
+classifier.bias     | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  motte_bailey 0/208 0s
+  motte_bailey 25/208 14s
+  motte_bailey 50/208 24s
+  motte_bailey 75/208 35s
+  motte_bailey 100/208 46s
+  motte_bailey 125/208 53s
+  motte_bailey 150/208 63s
+  motte_bailey 175/208 73s
+  motte_bailey 200/208 84s
+motte_bailey: 208 pairs, 87s
+  strawman 0/208 87s
+  strawman 25/208 96s
+  strawman 50/208 104s
+  strawman 75/208 112s
+  strawman 100/208 120s
+  strawman 125/208 129s
+  strawman 150/208 135s
+  strawman 175/208 140s
+  strawman 200/208 147s
+strawman: 208 pairs, 150s
+wrote results/patching_nli_L24.csv (22250 rows)

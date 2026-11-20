@@ -1,0 +1,28 @@
+/home/gpu_bundle/.venv/lib/python3.10/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights:  99%|█████████▉| 386/390 [00:00<00:00, 3858.51it/s]Loading weights: 100%|██████████| 390/390 [00:00<00:00, 3848.37it/s]
+[transformers] [1mDebertaV2Model LOAD REPORT[0m from: MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli
+Key                 | Status     |  | 
+--------------------+------------+--+-
+classifier.weight   | UNEXPECTED |  | 
+pooler.dense.bias   | UNEXPECTED |  | 
+pooler.dense.weight | UNEXPECTED |  | 
+classifier.bias     | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+motte_bailey: AtP on 63 pairs, 12s; top heads ['L23H0', 'L23H8', 'L23H13', 'L20H11', 'L23H4', 'L18H0', 'L19H6', 'L22H0', 'L21H2', 'L21H6']
+  motte_bailey ablation none: AUC 0.655
+  motte_bailey ablation top: AUC 0.607
+  motte_bailey ablation random: AUC 0.579
+  motte_bailey ablation top1_L23H0: AUC 0.659
+  motte_bailey ablation top1_L23H8: AUC 0.632
+  motte_bailey ablation top1_L23H13: AUC 0.641
+strawman: AtP on 82 pairs, 141s; top heads ['L23H11', 'L23H5', 'L20H3', 'L21H2', 'L22H12', 'L23H8', 'L23H15', 'L23H1', 'L23H9', 'L22H4']
+  strawman ablation none: AUC 0.713
+  strawman ablation top: AUC 0.443
+  strawman ablation random: AUC 0.690
+  strawman ablation top1_L23H11: AUC 0.654
+  strawman ablation top1_L23H5: AUC 0.683
+  strawman ablation top1_L20H3: AUC 0.701
+done in 259s

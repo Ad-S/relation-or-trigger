@@ -1,0 +1,19 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+interp/cache/
+relational-fallacy-detection/
+gpu_bundle/relational-fallacy-detection/
+mech_interp_proposal_submission/
+*.zip
+*.key
+mech interp proj pro.pdf
+mech_interp_proposal_presentation.*
+report/*.aux
+report/*.log
+report/*.out
+report/*.bbl
+report/*.blg
+report/acl_latex.tex
+interp/results/*_smoke.csv

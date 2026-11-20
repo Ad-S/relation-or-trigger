@@ -1,0 +1,42 @@
+[
+ {
+  "step": "smoke_patch",
+  "rc": 0,
+  "minutes": 0.3
+ },
+ {
+  "step": "extract",
+  "rc": 0,
+  "minutes": 0.8
+ },
+ {
+  "step": "patch_nli",
+  "rc": 0,
+  "minutes": 2.7
+ },
+ {
+  "step": "heads_nli",
+  "rc": 0,
+  "minutes": 4.5
+ },
+ {
+  "step": "erase_nli",
+  "rc": 0,
+  "minutes": 5.5
+ },
+ {
+  "step": "patch_plain",
+  "rc": 0,
+  "minutes": 2.3
+ },
+ {
+  "step": "heads_plain",
+  "rc": 0,
+  "minutes": 4.4
+ },
+ {
+  "step": "erase_plain",
+  "rc": 0,
+  "minutes": 5.5
+ }
+]

@@ -1,0 +1,42 @@
+/home/gpu_bundle/.venv/lib/python3.10/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights: 100%|██████████| 390/390 [00:00<00:00, 4231.33it/s]
+[transformers] [1mDebertaV2Model LOAD REPORT[0m from: microsoft/deberta-v3-large
+Key                                     | Status     |  | 
+----------------------------------------+------------+--+-
+lm_predictions.lm_head.bias             | UNEXPECTED |  | 
+mask_predictions.classifier.weight      | UNEXPECTED |  | 
+lm_predictions.lm_head.dense.weight     | UNEXPECTED |  | 
+mask_predictions.dense.bias             | UNEXPECTED |  | 
+lm_predictions.lm_head.dense.bias       | UNEXPECTED |  | 
+mask_predictions.dense.weight           | UNEXPECTED |  | 
+mask_predictions.LayerNorm.bias         | UNEXPECTED |  | 
+mask_predictions.LayerNorm.weight       | UNEXPECTED |  | 
+mask_predictions.classifier.bias        | UNEXPECTED |  | 
+lm_predictions.lm_head.LayerNorm.weight | UNEXPECTED |  | 
+lm_predictions.lm_head.LayerNorm.bias   | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+  motte_bailey 0/208 0s
+  motte_bailey 25/208 11s
+  motte_bailey 50/208 19s
+  motte_bailey 75/208 29s
+  motte_bailey 100/208 40s
+  motte_bailey 125/208 47s
+  motte_bailey 150/208 56s
+  motte_bailey 175/208 61s
+  motte_bailey 200/208 71s
+motte_bailey: 208 pairs, 74s
+  strawman 0/208 74s
+  strawman 25/208 80s
+  strawman 50/208 85s
+  strawman 75/208 91s
+  strawman 100/208 98s
+  strawman 125/208 105s
+  strawman 150/208 111s
+  strawman 175/208 118s
+  strawman 200/208 125s
+strawman: 208 pairs, 128s
+wrote results/patching_plain_L24.csv (18200 rows)

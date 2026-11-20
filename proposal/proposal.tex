@@ -1,0 +1,140 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+\setlist{itemsep=2pt, topsep=4pt}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{14pt}{4pt}
+\titlespacing*{\subsection}{0pt}{10pt}{2pt}
+
+\begin{document}
+
+\begin{center}
+{\LARGE\bfseries Relation or Trigger?}\\[6pt]
+{\Large\bfseries Probing and Causally Interpreting\\[2pt] a Cross-Turn Fallacy Classifier}\\[14pt]
+{\large Project Proposal, Mechanistic Interpretability of Language Models}\\[10pt]
+Aaditya Sharma (2019113009) \quad\textperiodcentered\quad Salvik Krishna Nautiyal (2023113015)\\[4pt]
+27 October 2026
+\end{center}
+
+\vspace{6pt}
+
+\section{What: Problem Statement and Objectives}
+
+This project looks at how a transformer classifier detects two rhetorical fallacies that only appear across turns of a conversation: motte-and-bailey and strawman. In a motte-and-bailey, a speaker makes a broad claim A, gets challenged (C), and then retreats to a narrower and easier claim B while acting as if B was the point all along. In a strawman, a responder replies with B, a distorted or stronger version of what the other person actually said in A, and argues against that instead. In both cases no single comment is fallacious on its own. The fallacy is in how B relates to A.
+
+The difficulty is that these exchanges usually come with recognisable phrases such as ``I never said'', ``all I'm saying is'' or ``so you're saying''. The same phrases also show up in perfectly fair clarifications. A classifier can therefore reach good accuracy in two very different ways. It can compare the claims and notice that B is narrower than A or not entailed by it, or it can simply learn that the phrase is present. Accuracy alone does not tell these apart, and with a small dataset this kind of shortcut is easy to miss. Our aim is to look inside a fine-tuned model and find out which of the two it is actually doing.
+
+We will try to answer four questions:
+
+\begin{enumerate}[leftmargin=*]
+  \item At which layers and token positions (claim A, challenge C, claim B, the trigger phrase, and [CLS]) can the fallacy label be linearly decoded, once we control for what a probe can learn on its own?
+  \item Is that information relational, such as whether A entails B or whether B narrows the scope of A, or is it lexical, such as whether a trigger phrase is present? Are these two kinds of information encoded in separable directions?
+  \item Which layers, positions and attention heads causally contribute to the prediction, as measured by activation patching on minimal pairs?
+  \item Does a model initialised from a natural language inference (NLI) checkpoint reuse its entailment representations for this task, compared to the same model without NLI pre-training?
+\end{enumerate}
+
+Going in, we have two competing hypotheses. If the model compares the claims, we expect the label to be decodable mostly from the B tokens in middle to later layers, patching the B content to matter most, and removing the trigger direction to hurt very little. If the model relies on the phrase, we expect the label to be decodable early from the trigger tokens, patching those tokens alone to recover most of the prediction, and erasing the trigger direction to hurt accuracy badly. We are not assuming either outcome, and a mixed answer, possibly different for the two fallacies, is also a reasonable result.
+
+\section{Why: Motivation and Significance}
+
+Most work on fallacy detection reports classification scores and stops there. A high score on a small dataset collected through keyword search is exactly the situation where a model can be right for the wrong reasons, and it is hard to see this from the outside. Interpretability methods let us test the shortcut directly instead of guessing at it from error analysis.
+
+The task is also a convenient testbed for interpretability. The label depends on two or three spans of text and the relation between them, so it is natural to ask where in the network information from different segments gets combined. Unlike many interpretability studies where the feature of interest is unknown, here we know the suspected shortcut in advance and can edit it in the input. This means we can make specific predictions and check them. Fallacy examples are also easy to turn into minimal pairs, either by changing B slightly so the label flips or by adding or removing the trigger phrase while keeping the label. These pairs are exactly the clean and corrupted inputs that activation patching needs.
+
+There is a practical side as well. Tools for argument mining and content moderation are often built on fine-tuned encoders like the one we will study. If such a model is mostly reading phrases, it will miss fallacies stated without the usual wording and will flag honest clarifications that happen to use it. Knowing which of these it does tells us how it is likely to fail.
+
+\section{How: Proposed Methodology}
+
+\subsection{Dataset and task formulation}
+
+We will use Reddit ChangeMyView discussions from the ConvoKit Winning Arguments corpus (about 3,000 conversations and 290,000 utterances). Candidate examples will be mined from reply chains with an A, C, B structure for motte-and-bailey (a claim, a challenge from someone else, and a reply by the original speaker) and an A, B structure for strawman. Because the full candidate pool is very large, we will narrow it using denial and retreat phrases. The comments in this forum are often long, so for each candidate we will extract a short version of each claim with the help of an LLM and check every extraction by hand. Candidates where the turn covers several unrelated points will be skipped rather than summarised.
+
+Each usable example will be labelled by hand as MOTTE\_BAILEY, STRAWMAN or NONE, and each fallacy will be treated as a separate binary task against NONE. We are aiming for around 180 to 200 labelled real examples, roughly 90 to 100 per task. Both of us will label a shared subset of about 40 examples so that we can report inter-annotator agreement.
+
+\subsection{Minimal pairs}
+
+From each real example we will generate two kinds of controlled edits with LLM assistance. A counterfactual pair keeps A and C and changes B as little as possible so that the relation, and therefore the label, flips. A trigger-swap pair removes or adds the trigger phrase in B while keeping the claim and the label the same. We will hand-check about 30 pairs of each type and only use the accepted ones. We will also prepare a trigger-masked version of each test example, where the phrase is replaced with neutral filler. Edited examples will be used for analysis and possibly for training augmentation, but never as part of the reported test score, and every edited version will stay in the same cross-validation fold as its source example.
+
+\subsection{Model}
+
+The model under study is a DeBERTa-v3 cross-encoder initialised from an NLI checkpoint, with a new two-way classification head. The turns are joined into one input (A [SEP] C [SEP] B for motte-and-bailey and A [SEP] B for strawman) so that attention can relate them directly. We will train one model per task with a low learning rate, few epochs and early stopping, using 5-fold cross-validation grouped by conversation and repeated over 3 seeds. We plan to use the large model (24 layers) and fall back to the base model (12 layers) if compute becomes a problem. For the fourth research question we will train the same architecture starting from plain DeBERTa-v3 weights. As reference points we will also run a simple classifier on frozen NLI and lexical features and a zero-shot LLM, mainly to check that the fine-tuned model is good enough to be worth interpreting. Since TransformerLens does not support DeBERTa, we will use PyTorch forward hooks or nnsight to cache and patch activations.
+
+\subsection{Experiment 1: Layer-wise probing}
+
+We will cache hidden states at every layer and pool them over five position groups: [CLS], the A tokens, the C tokens, the trigger tokens and the remaining B tokens. For each layer and position we will train logistic regression probes, with folds grouped by conversation, for four targets: the fallacy label, whether a trigger phrase is present, whether A entails B according to the original NLI model, and whether B narrows the scope of A (annotated on a subset). To avoid reading too much into probe accuracy, we will report selectivity against control tasks with shuffled labels (Hewitt and Liang, 2019), run the same probes on the un-fine-tuned and randomly initialised models, and compare against a model that only sees B. We will keep the probes linear and may use MDL probing (Voita and Titov, 2020) as an extra check.
+
+\subsection{Experiment 2: Geometry of the minimal pairs}
+
+Using the probe directions from Experiment 1, we will measure at each layer the cosine similarity between the fallacy direction and the trigger direction, and how far each counterfactual pair and each trigger-swap pair moves along the fallacy direction. If the model is relational, counterfactual edits should move the representation a lot along this direction and trigger swaps should not. If it relies on the phrase, we expect the opposite. We will also look at how much attention the B tokens pay to the A tokens compared with the trigger span, as supporting evidence.
+
+\subsection{Experiment 3: Activation patching}
+
+Counterfactual pairs will serve as clean and corrupted inputs. We will run the corrupted input, replace one activation with its value from the clean run, and measure how much of the clean logit difference (fallacy minus NONE) is recovered. We will first do this for the residual stream at every layer and position group, which gives a layer by segment heatmap, and then for individual attention heads and MLP outputs in the layers that matter. Running the same procedure on trigger-swap pairs tells us how much the phrase alone moves the prediction. If full patching is too slow, we will use attribution patching to rank components first and then verify the top ones with actual patching (Zhang and Nanda, 2024).
+
+\subsection{Experiment 4: Erasure, ablation and steering}
+
+We will remove the trigger direction from the representations at each layer using LEACE (Belrose et al., 2023) and measure how much accuracy drops, following the amnesic probing idea of Elazar et al. (2021). We will do the same for the entailment direction. We will also mean-ablate the heads identified in Experiment 3 and check the effect on real held-out examples, and, if time allows, add the fallacy direction to NONE examples to see whether predictions flip. Finally we will compare integrated gradients attributions with the patching results to see where gradient-based explanations agree or disagree with causal ones.
+
+All four experiments will be repeated on the NLI-initialised and plain models, which gives the comparison needed for the fourth research question. We will also compute the cosine similarity between the fine-tuned model's fallacy direction and the original NLI model's entailment direction at each layer.
+
+\subsection{Evaluation}
+
+With roughly 90 to 100 real examples per task, results will be noisy, so we will only treat large effects as findings. Every number will be reported with its spread across seeds and a bootstrap 95\% interval, probe results will be reported as selectivity rather than raw accuracy, and every claim based on probes will be paired with a causal test. Classification performance will be reported as accuracy and F1 with the fallacy as the positive class, against the majority baseline. For the interpretability experiments we will report probe selectivity per layer and position, the fraction of logit difference recovered by patching, and the drop in accuracy after erasure or ablation.
+
+\section{Expected Outcomes}
+
+At the end of the project we expect to have a fine-tuned classifier for each fallacy with grouped cross-validation results, layer by position probing maps for the four targets, and a small set of hand-checked minimal pairs. The main result will be the patching heatmaps together with the erasure and ablation results, which should show whether the decision depends on the relation between the claims, on the trigger phrase, or on both. We will also report whether NLI pre-training is reused. We will release our code and the cached activations, and include a section on what probing and patching can and cannot tell us at this data size. Any of the possible outcomes is informative: if the model relies on the phrase, we will have shown the shortcut mechanistically, and if it compares the claims, we will know where and how.
+
+\section{Proposed Timeline}
+
+The final deadline is 17 November. The table below shows how we plan to use the time.
+
+\vspace{4pt}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+\toprule
+Dates & Work \\
+\midrule
+27 Oct -- 1 Nov & Mine and label candidates, extract claims, generate and check minimal pairs, set up grouped cross-validation \\
+2 Nov -- 5 Nov & Fine-tune the NLI-initialised and plain models, run reference classifiers. If the model is not clearly above the majority baseline, the analysis moves to the frozen NLI model instead \\
+6 Nov -- 9 Nov & Cache activations, layer-wise probing with controls, minimal-pair geometry (Experiments 1 and 2) \\
+10 Nov -- 14 Nov & Activation patching, trigger and entailment erasure, head ablation (Experiments 3 and 4) \\
+15 Nov -- 17 Nov & NLI versus plain comparison, final figures and report \\
+\bottomrule
+\end{tabularx}
+
+\section{Scope and Feasibility}
+
+The core of the project is the dataset, the fine-tuned model, layer-wise probing, the minimal-pair analysis, residual stream patching and trigger erasure. Head-level patching and the NLI versus plain comparison are the next priority, and steering and MDL probing will only be done if time allows. Given the short timeline we are keeping the core small enough to finish.
+
+The dataset is small, so each analysis needs only a few hundred forward passes. Most of the compute goes into fine-tuning (5 folds, 3 seeds, 2 tasks, 2 initialisations), which we estimate at 4 to 8 hours on a single rented A30 or A100 GPU. We will time one run before committing to the full set. The main risks are that the model ends up close to chance, that generated pairs are unnatural, and that edited pairs have different lengths so positions do not line up. For these we will fall back to interpreting the frozen NLI model, use only hand-accepted pairs, and patch at the level of whole segments when token positions differ.
+
+\section*{References}
+\small
+\begin{itemize}[leftmargin=*, label={}, itemsep=1pt]
+\item Belrose, N., et al. (2023). LEACE: Perfect linear concept erasure in closed form. \emph{NeurIPS}.
+\item Chang, J. P., et al. (2020). ConvoKit: A toolkit for the analysis of conversations. \emph{SIGDIAL}.
+\item Elazar, Y., Ravfogel, S., Jacovi, A., and Goldberg, Y. (2021). Amnesic probing: Behavioral explanation with amnesic counterfactuals. \emph{TACL}.
+\item He, P., Gao, J., and Chen, W. (2021). DeBERTaV3: Improving DeBERTa using ELECTRA-style pre-training with gradient-disentangled embedding sharing. \emph{arXiv:2111.09543}.
+\item Hewitt, J., and Liang, P. (2019). Designing and interpreting probes with control tasks. \emph{EMNLP}.
+\item Jin, Z., et al. (2022). Logical fallacy detection. \emph{Findings of EMNLP}.
+\item McCoy, T., Pavlick, E., and Linzen, T. (2019). Right for the wrong reasons: Diagnosing syntactic heuristics in natural language inference. \emph{ACL}.
+\item Meng, K., Bau, D., Andonian, A., and Belinkov, Y. (2022). Locating and editing factual associations in GPT. \emph{NeurIPS}.
+\item Sundararajan, M., Taly, A., and Yan, Q. (2017). Axiomatic attribution for deep networks. \emph{ICML}.
+\item Tan, C., Niculae, V., Danescu-Niculescu-Mizil, C., and Lee, L. (2016). Winning arguments: Interaction dynamics and persuasion strategies in good-faith online discussions. \emph{WWW}.
+\item Voita, E., and Titov, I. (2020). Information-theoretic probing with minimum description length. \emph{EMNLP}.
+\item Wang, K., et al. (2023). Interpretability in the wild: A circuit for indirect object identification in GPT-2 small. \emph{ICLR}.
+\item Zhang, F., and Nanda, N. (2024). Towards best practices of activation patching in language models: Metrics and methods. \emph{ICLR}.
+\end{itemize}
+
+\end{document}

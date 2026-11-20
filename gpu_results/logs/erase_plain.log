@@ -1,0 +1,65 @@
+/home/gpu_bundle/.venv/lib/python3.10/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+/home/gpu_bundle/.venv/lib/python3.10/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights: 100%|██████████| 390/390 [00:00<00:00, 4241.32it/s]
+[transformers] [1mDebertaV2Model LOAD REPORT[0m from: microsoft/deberta-v3-large
+Key                                     | Status     |  | 
+----------------------------------------+------------+--+-
+mask_predictions.classifier.bias        | UNEXPECTED |  | 
+lm_predictions.lm_head.bias             | UNEXPECTED |  | 
+lm_predictions.lm_head.LayerNorm.weight | UNEXPECTED |  | 
+mask_predictions.LayerNorm.weight       | UNEXPECTED |  | 
+lm_predictions.lm_head.dense.weight     | UNEXPECTED |  | 
+mask_predictions.dense.bias             | UNEXPECTED |  | 
+lm_predictions.lm_head.LayerNorm.bias   | UNEXPECTED |  | 
+mask_predictions.classifier.weight      | UNEXPECTED |  | 
+lm_predictions.lm_head.dense.bias       | UNEXPECTED |  | 
+mask_predictions.LayerNorm.bias         | UNEXPECTED |  | 
+mask_predictions.dense.weight           | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+motte_bailey fold 0: 38s
+motte_bailey fold 1: 77s
+motte_bailey fold 2: 113s
+motte_bailey fold 3: 155s
+motte_bailey fold 4: 187s
+strawman fold 0: 212s
+strawman fold 1: 240s
+strawman fold 2: 270s
+strawman fold 3: 296s
+strawman fold 4: 320s
+/home/gpu_bundle/interp/erasure.py:188: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  summ = out.groupby(["shape", "erased", "layer"]).apply(lambda g: roc_auc_score(g.y, g.logit)).rename("auc").reset_index()
+erased              entail   none  random  trigger
+shape        layer                                
+motte_bailey -1        NaN  0.639     NaN      NaN
+              0      0.638    NaN   0.639    0.637
+              2      0.634    NaN   0.638    0.636
+              4      0.630    NaN   0.640    0.636
+              6      0.634    NaN   0.637    0.631
+              8      0.630    NaN   0.638    0.626
+              10     0.628    NaN   0.637    0.626
+              12     0.631    NaN   0.639    0.621
+              14     0.632    NaN   0.638    0.618
+              16     0.632    NaN   0.636    0.621
+              18     0.633    NaN   0.644    0.635
+              20     0.628    NaN   0.628    0.631
+              22     0.646    NaN   0.640    0.640
+              24     0.627    NaN   0.645    0.638
+strawman     -1        NaN  0.627     NaN      NaN
+              0      0.626    NaN   0.627    0.628
+              2      0.624    NaN   0.628    0.627
+              4      0.625    NaN   0.627    0.626
+              6      0.626    NaN   0.628    0.624
+              8      0.631    NaN   0.627    0.626
+              10     0.629    NaN   0.628    0.627
+              12     0.622    NaN   0.627    0.625
+              14     0.629    NaN   0.626    0.617
+              16     0.631    NaN   0.628    0.624
+              18     0.625    NaN   0.633    0.625
+              20     0.616    NaN   0.625    0.635
+              22     0.604    NaN   0.630    0.621
+              24     0.595    NaN   0.626    0.626

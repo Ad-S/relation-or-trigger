@@ -1,0 +1,57 @@
+/home/gpu_bundle/.venv/lib/python3.10/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+/home/gpu_bundle/.venv/lib/python3.10/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+Loading weights:   0%|          | 0/390 [00:00<?, ?it/s]Loading weights:  90%|████████▉ | 350/390 [00:00<00:00, 3438.96it/s]Loading weights: 100%|██████████| 390/390 [00:00<00:00, 3446.64it/s]
+[transformers] [1mDebertaV2Model LOAD REPORT[0m from: MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli
+Key                 | Status     |  | 
+--------------------+------------+--+-
+classifier.weight   | UNEXPECTED |  | 
+pooler.dense.bias   | UNEXPECTED |  | 
+pooler.dense.weight | UNEXPECTED |  | 
+classifier.bias     | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+motte_bailey fold 0: 38s
+motte_bailey fold 1: 77s
+motte_bailey fold 2: 113s
+motte_bailey fold 3: 154s
+motte_bailey fold 4: 187s
+strawman fold 0: 212s
+strawman fold 1: 239s
+strawman fold 2: 270s
+strawman fold 3: 296s
+strawman fold 4: 319s
+/home/gpu_bundle/interp/erasure.py:188: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  summ = out.groupby(["shape", "erased", "layer"]).apply(lambda g: roc_auc_score(g.y, g.logit)).rename("auc").reset_index()
+erased              entail   none  random  trigger
+shape        layer                                
+motte_bailey -1        NaN  0.655     NaN      NaN
+              0      0.654    NaN   0.654    0.656
+              2      0.654    NaN   0.654    0.656
+              4      0.653    NaN   0.655    0.658
+              6      0.654    NaN   0.654    0.661
+              8      0.649    NaN   0.653    0.660
+              10     0.649    NaN   0.653    0.649
+              12     0.654    NaN   0.653    0.644
+              14     0.655    NaN   0.654    0.644
+              16     0.652    NaN   0.653    0.653
+              18     0.648    NaN   0.652    0.658
+              20     0.650    NaN   0.656    0.656
+              22     0.628    NaN   0.648    0.643
+              24     0.628    NaN   0.653    0.656
+strawman     -1        NaN  0.713     NaN      NaN
+              0      0.712    NaN   0.712    0.718
+              2      0.715    NaN   0.713    0.713
+              4      0.712    NaN   0.712    0.715
+              6      0.711    NaN   0.712    0.713
+              8      0.708    NaN   0.713    0.713
+              10     0.712    NaN   0.713    0.704
+              12     0.709    NaN   0.713    0.709
+              14     0.706    NaN   0.711    0.705
+              16     0.709    NaN   0.711    0.707
+              18     0.713    NaN   0.715    0.701
+              20     0.698    NaN   0.710    0.702
+              22     0.716    NaN   0.714    0.706
+              24     0.663    NaN   0.711    0.715
