@@ -137,7 +137,7 @@ text(s, 1.15, 1.05, 9, 0.3, "MECHANISTIC INTERPRETABILITY  ·  FINAL PRESENTATIO
 text(s, 1.15, 1.75, 11, 1.6, ["Relation or Trigger?", "Inside a Cross-Turn Fallacy Detector"], size=40, bold=True, color=WHITE)
 text(s, 1.15, 3.75, 10.5, 0.9, "What a DeBERTa-v3 encoder actually uses to tell motte-and-bailey and strawman apart "
                                 "from fair replies", size=18, color="C9CFD8")
-text(s, 1.15, 6.35, 9, 0.3, "Aaditya Sharma  ·  Salvik Krishna Nautiyal   |   random.strings", size=11, color="A9B1BF")
+text(s, 1.15, 6.35, 9, 0.3, "Aaditya Sharma  ·  2019113009", size=11, color="A9B1BF")
 
 # =========================================================================================== 2 the question
 s = content("Same opening, opposite labels",
